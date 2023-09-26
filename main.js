@@ -50,21 +50,27 @@ searchBtn.addEventListener('click', ()=> {
     handleSearch()
 })
 
-function addToFavorites(cityName) {
-    let favorites = localStorage.getItem('favorites')
-    if(!favorites) {
-        favorites = []
-    } else {
-        favorites = JSON.parse(favorites)
-    }
+favWeatherIcon.addEventListener('click', () => {
+    const cityName = document.querySelector('.city').textContent
 
-    if (!favorites.includes(cityName)) {
+    addToFavorites(cityName)
+})
+
+function addToFavorites(cityName) {
+    let favorites = localStorage.getItem('favorites') || []
+    favorites = JSON.parse(favorites)
+
+    if (favorites.includes(cityName)) {
+        favorites = favorites.filter(city => city !== cityName)
+        localStorage.setItem('favorites', JSON.stringify(favorites))
+        console.log(`${cityName} has been eliminated from your favorites`)
+    } else {
         favorites.push(cityName)
         localStorage.setItem('favorites', JSON.stringify(favorites))
-        console.log(`${cityName} ha sido agregado a tus favoritas`)
-    } else {
-        console.log(`${cityName} ya esta en tus favoritas`)
+        console.log(`${cityName} has been added to your favorites`)
     }
+
+    checkFav()
 }
 
 function checkFav() {
