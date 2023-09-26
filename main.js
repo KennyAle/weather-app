@@ -35,14 +35,19 @@ async function checkWeather(city) {
     }
 }
 
+function handleSearch() {
+    checkFav()
+    checkWeather(searchBox.value)
+}
+
 searchBox.addEventListener('keydown', (event) => {
     if (event.key === 'Enter') {
-        checkWeather(searchBox.value)
+        handleSearch()
     }
 })
 
 searchBtn.addEventListener('click', ()=> {
-    checkWeather(searchBox.value)
+    handleSearch()
 })
 
 function addToFavorites(cityName) {
