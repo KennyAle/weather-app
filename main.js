@@ -61,3 +61,21 @@ function addToFavorites(cityName) {
         console.log(`${cityName} ya esta en tus favoritas`)
     }
 }
+
+function checkFav() {
+    const favorites = localStorage.getItem('favorites')
+
+    if (favorites) {
+        const favoritesList = JSON.parse(favorites).map(city => city.toLowerCase())     
+        const cityName = searchBox.value.toLowerCase()
+
+        console.log('Favorites List:', favoritesList);
+        console.log('City Name:', cityName);
+
+        if (favoritesList.includes(cityName)) {
+            favWeatherIcon.src = 'img/fav-red.svg'
+        } else {
+            favWeatherIcon.src = 'img/fav.svg'
+        }
+    }
+}
