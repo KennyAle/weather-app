@@ -44,3 +44,20 @@ searchBox.addEventListener('keydown', (event) => {
 searchBtn.addEventListener('click', ()=> {
     checkWeather(searchBox.value)
 })
+
+function addToFavorites(cityName) {
+    let favorites = localStorage.getItem('favorites')
+    if(!favorites) {
+        favorites = []
+    } else {
+        favorites = JSON.parse(favorites)
+    }
+
+    if (!favorites.includes(cityName)) {
+        favorites.push(cityName)
+        localStorage.setItem('favorites', JSON.stringify(favorites))
+        console.log(`${cityName} ha sido agregado a tus favoritas`)
+    } else {
+        console.log(`${cityName} ya esta en tus favoritas`)
+    }
+}
