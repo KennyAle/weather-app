@@ -120,6 +120,7 @@ function displayWeatherInfo(data) {
     const section = document.querySelector('.homeboard');
     const div = document.createElement('div')
     div.classList.add('favorite-card')
+    div.setAttribute('data-city', data.name)
     div.innerHTML = `
         <div class="weather">
             <picture>
@@ -145,7 +146,38 @@ function displayWeatherInfo(data) {
                 </div>
             </div>
         </div>`
+    
+        const favWeatherElement = div.querySelector('.fav-weather')
+        const cityName = data.name
+    
+        const favorites = localStorage.getItem('favorites')
+        if (favorites) {
+            const favoritesList = JSON.parse(favorites).map(city => removeAccents(city.toLowerCase()))
+    
+            if (favoritesList.includes(removeAccents(cityName.toLowerCase()))) {
+                favWeatherElement.src = 'img/fav-red.svg'
+            }
+        }
+    
+        favWeatherElement.addEventListener('click', () => {
+            addToFavorites(cityName)
+    
+            if (favWeatherElement.src.includes('fav.svg')) {
+                favWeatherElement.src = 'img/fav-red.svg'
+            } else {
+                favWeatherElement.src = 'img/fav.svg'
+                removeFromFavorites(cityName)
+            }
+        })
+    
     section.appendChild(div)
+}
+
+function removeFromFavorites(cityName) {
+    const elementToRemove = document.querySelector(`.favorite-card[data-city="${cityName}"]`)
+    if (elementToRemove) {
+        elementToRemove.remove()
+    }
 }
 
 function getWeatherIcon(weatherDescription) {
