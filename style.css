@@ -98,3 +98,22 @@ picture {
     font-size: 28px;
     margin-top: -6px;
 }
+
+
+/* HOMEBOARD */
+.homeboard {
+    display: grid;
+    padding: 1.5rem;
+    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+    gap: 1.5rem;
+}
+.favorite-card {
+    width: 90%;
+    max-width: 470px;
+    background: linear-gradient(135deg, #00feba, #5b548a);
+    color: #fff;
+    margin: 100px auto 0;
+    border-radius: 20px;
+    padding: 2rem;
+    text-align: center;
+}

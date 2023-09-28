@@ -22,13 +22,13 @@ async function checkWeather(city) {
         if (data.weather[0].main === 'Clouds') {
             weatherIcon.src = 'img/cloudy.svg'
         } else if (data.weather[0].main === 'Clear') {
-            weatherIcon.src = 'img/clear.png'
+            weatherIcon.src = 'img/clear.svg'
         } else if (data.weather[0].main === 'Rain') {
-            weatherIcon.src = 'img/rain.png'
+            weatherIcon.src = 'img/rain.svg'
         } else if (data.weather[0].main === 'Drizzle') {
-            weatherIcon.src = 'img/drizzle.png'
+            weatherIcon.src = 'img/drizzle.svg'
         } else if (data.weather[0].main === 'Mist') {
-            weatherIcon.src = 'img/mist.png'
+            weatherIcon.src = 'img/mist.svg'
         }
 
         document.querySelector('.card').style.display = 'block'
@@ -46,7 +46,7 @@ searchBox.addEventListener('keydown', (event) => {
     }
 })
 
-searchBtn.addEventListener('click', ()=> {
+searchBtn.addEventListener('click', () => {
     handleSearch()
 })
 
@@ -57,8 +57,12 @@ favWeatherIcon.addEventListener('click', () => {
 })
 
 function addToFavorites(cityName) {
-    let favorites = localStorage.getItem('favorites') || []
-    favorites = JSON.parse(favorites)
+    let favorites = localStorage.getItem('favorites')
+    if(!favorites) {
+        favorites = []
+    } else {
+        favorites = JSON.parse(favorites)
+    }
 
     if (favorites.includes(cityName)) {
         favorites = favorites.filter(city => city !== cityName)
@@ -73,12 +77,17 @@ function addToFavorites(cityName) {
     checkFav()
 }
 
+
+function removeAccents(str) {
+    return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+}
+
 function checkFav() {
     const favorites = localStorage.getItem('favorites')
 
     if (favorites) {
-        const favoritesList = JSON.parse(favorites).map(city => city.toLowerCase())     
-        const cityName = searchBox.value.toLowerCase()
+        const favoritesList = JSON.parse(favorites).map(city => removeAccents(city.toLowerCase()))     
+        const cityName = removeAccents(searchBox.value.toLowerCase())
 
         console.log('Favorites List:', favoritesList);
         console.log('City Name:', cityName);
@@ -90,3 +99,69 @@ function checkFav() {
         }
     }
 }
+
+const favorites = localStorage.getItem('favorites')
+if (favorites) {
+    const favoritesList = JSON.parse(favorites)
+
+    favoritesList.forEach(cityName => {
+        fetch(apiUrl + cityName + `&appid=${apiKey}`)
+            .then(response => response.json())
+            .then(data => {
+                displayWeatherInfo(data)
+            })
+            .catch(error => {
+                console.error(`Error ${cityName}: ${error}`)
+            })
+    })
+}
+
+function displayWeatherInfo(data) {
+    const section = document.querySelector('.homeboard');
+    const div = document.createElement('div')
+    div.classList.add('favorite-card')
+    div.innerHTML = `
+        <div class="weather">
+            <picture>
+                <img src="${getWeatherIcon(data.weather[0].main)}" class="weather-icon" alt="${data.weather[0].main}">
+                <img src="img/fav.svg" class="fav-weather" alt="Favorite">
+            </picture>
+            <h1 class="temp">${Math.round(data.main.temp)}°C</h1>
+            <h2 class="city">${data.name}</h2>
+            <div class="details">
+                <div class="col">
+                    <img src="img/humidity.png">
+                    <div>
+                        <p class="humidity"></p>
+                        <p>${data.main.humidity}%</p>
+                    </div>
+                </div>
+                <div class="col">
+                    <img src="img/wind.png">
+                    <div>
+                        <p class="wind"></p>
+                        <p>${data.wind.speed} km/h</p>
+                    </div>
+                </div>
+            </div>
+        </div>`
+    section.appendChild(div)
+}
+
+function getWeatherIcon(weatherDescription) {
+    switch (weatherDescription) {
+        case 'Clouds':
+        return 'img/cloudy.svg'
+        case 'Clear':
+        return 'img/clear.svg'
+        case 'Rain':
+        return 'img/rain.svg'
+        case 'Drizzle':
+        return 'img/drizzle.svg'
+        case 'Mist':
+        return 'img/mist.svg'
+        default:
+        return 'img/unknown.svg'
+    }
+}
+
