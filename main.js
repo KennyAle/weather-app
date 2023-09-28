@@ -6,6 +6,11 @@ const searchBtn = document.querySelector('.search button')
 const weatherIcon = document.querySelector('.weather-icon')
 const favWeatherIcon = document.querySelector('.fav-weather')
 
+const cardModal = document.querySelector('.card')
+const modalBackground = document.createElement('div')
+modalBackground.classList.add('modal-background')
+document.body.appendChild(modalBackground)
+
 async function checkWeather(city) {
     const response = await fetch(apiUrl + city + `&appid=${apiKey}`)
 
@@ -32,8 +37,26 @@ async function checkWeather(city) {
         }
 
         document.querySelector('.card').style.display = 'block'
+        document.querySelector('.card').classList.add('modal-overlay')
+        modalBackground.style.display = 'block'
     }
 }
+
+function hideModal() {
+    document.querySelector('.card').style.display = 'none'
+    modalBackground.style.display = 'none'
+}
+
+document.querySelector('.card').addEventListener('click', function(event) {
+    event.stopPropagation()
+})
+
+document.addEventListener('click', function(event) {
+    const card = document.querySelector('.card');
+    if (event.target !== card && !card.contains(event.target)) {
+        hideModal()
+    }
+})
 
 function handleSearch() {
     checkFav()
@@ -67,11 +90,11 @@ function addToFavorites(cityName) {
     if (favorites.includes(cityName)) {
         favorites = favorites.filter(city => city !== cityName)
         localStorage.setItem('favorites', JSON.stringify(favorites))
-        console.log(`${cityName} has been eliminated from your favorites`)
+        console.log(`${cityName} eliminated from your favorites`)
     } else {
         favorites.push(cityName)
         localStorage.setItem('favorites', JSON.stringify(favorites))
-        console.log(`${cityName} has been added to your favorites`)
+        console.log(`${cityName} added to your favorites`)
     }
 
     checkFav()
@@ -90,7 +113,6 @@ function checkFav() {
         const cityName = removeAccents(searchBox.value.toLowerCase())
 
         console.log('Favorites List:', favoritesList);
-        console.log('City Name:', cityName);
 
         if (favoritesList.includes(cityName)) {
             favWeatherIcon.src = 'img/fav-red.svg'
@@ -117,6 +139,7 @@ if (favorites) {
 }
 
 function displayWeatherInfo(data) {
+    console.log(data)
     const section = document.querySelector('.homeboard');
     const div = document.createElement('div')
     div.classList.add('favorite-card')
