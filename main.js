@@ -91,15 +91,35 @@ function addToFavorites(cityName) {
         favorites = favorites.filter(city => city !== cityName)
         localStorage.setItem('favorites', JSON.stringify(favorites))
         console.log(`${cityName} eliminated from your favorites`)
+        removeFromHomeboard(cityName)
     } else {
         favorites.push(cityName)
         localStorage.setItem('favorites', JSON.stringify(favorites))
         console.log(`${cityName} added to your favorites`)
+        addToHomeboard(cityName)
     }
 
     checkFav()
 }
 
+function removeFromHomeboard(cityName) {
+    const section = document.querySelector('.homeboard')
+    const cityElement = section.querySelector(`[data-city="${cityName}"]`)
+    if (cityElement) {
+        cityElement.remove()
+    }
+}
+
+function addToHomeboard(cityName) {
+    fetch(apiUrl + cityName + `&appid=${apiKey}`)
+        .then(response => response.json())
+        .then(data => {
+            displayWeatherInfo(data)
+        })
+        .catch(error => {
+            console.error(`Error ${cityName}: ${error}`)
+        })
+}
 
 function removeAccents(str) {
     return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
