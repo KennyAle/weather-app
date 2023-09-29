@@ -34,6 +34,12 @@ async function checkWeather(city) {
             weatherIcon.src = 'img/drizzle.svg'
         } else if (data.weather[0].main === 'Mist') {
             weatherIcon.src = 'img/mist.svg'
+        } else if (data.weather[0].main === 'Thunderstorm') {
+            weatherIcon.src = 'img/thunder.svg'
+        } else if (data.weather[0].main === 'Haze') {
+            weatherIcon.src = 'img/haze.svg'
+        } else if (data.weather[0].main === 'Snow') {
+            weatherIcon.src = 'img/snow.svg'
         }
 
         document.querySelector('.card').style.display = 'block'
@@ -45,6 +51,12 @@ async function checkWeather(city) {
 function hideModal() {
     document.querySelector('.card').style.display = 'none'
     modalBackground.style.display = 'none'
+}
+
+document.onkeydown = function(e) {
+    if (e.key === 'Escape') {
+        hideModal()
+    }
 }
 
 document.querySelector('.card').addEventListener('click', function(event) {
@@ -235,6 +247,12 @@ function getWeatherIcon(weatherDescription) {
         return 'img/drizzle.svg'
         case 'Mist':
         return 'img/mist.svg'
+        case 'Haze':
+        return 'img/haze.svg'
+        case 'Thunderstorm':
+        return 'img/thunder.svg'
+        case 'Snow':
+        return 'img/snow.svg'
         default:
         return 'img/unknown.svg'
     }
