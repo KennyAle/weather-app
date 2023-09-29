@@ -1,46 +1,60 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <!-- Meta tags -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Stylesheet -->
     <link rel="stylesheet" href="style.css">
+
+    <!-- External scripts -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+
+    <!-- Page title -->
     <title>Weather App</title>
 </head>
 <body>
-    <div class="search">
-        <input type="text" placeholder="Enter city">
+    <!-- Search header -->
+    <header class="search">
+        <input type="text" placeholder="Enter city" autofocus>
         <button><img src="img/search.png" alt="Search button"></button>
-    </div>
-    <div class="card">
+    </header>
+
+    <!-- Weather card -->
+    <article class="card">
         <div class="weather">
-            <picture>
-                <img src="img/rain.png" class="weather-icon">
+            <div class="pictures">
+                <img src="img/rain.svg" class="weather-icon" alt="Rain weather">
                 <img src="img/fav.svg" class="fav-weather" alt="Favorite">
-            </picture>
-            <h1 class="temp"></h1>
-            <h2 class="city"></h2>
+            </div>
+            <h1 class="temp">Temperature</h1>
+            <h2 class="city">City</h2>
             <div class="details">
                 <div class="col">
-                    <img src="img/humidity.png">
+                    <img src="img/humidity.png" alt="Humidity percentage">
                     <div>
-                        <p class="humidity"></p>
-                        <p></p>
+                        <p>Humidity</p>
+                        <p id="humidity"></p>
                     </div>
                 </div>
                 <div class="col">
-                    <img src="img/wind.png">
+                    <img src="img/wind.png" alt="Wind speed">
                     <div>
-                        <p class="wind"></p>
-                        <p></p>
+                        <p>Wind Speed</p>
+                        <p id="wind"></p>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
-    <section class="homeboard">
-    </section>
+    </article>
+
+    <!-- Homeboard section -->
+    <main class="homeboard">
+    </main>
+
+    <!-- Javascript file -->
     <script src="main.js"></script>
 </body>
 </html>

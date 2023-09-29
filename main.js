@@ -1,16 +1,20 @@
+// API key and base URL for OpenWeatherMap API
 const apiKey = '8fcca1709cbbedbaf8998124bf910108'
 const apiUrl = 'https://api.openweathermap.org/data/2.5/weather?units=metric&q='
 
+// DOM elements
 const searchBox = document.querySelector('.search input')
 const searchBtn = document.querySelector('.search button')
 const weatherIcon = document.querySelector('.weather-icon')
 const favWeatherIcon = document.querySelector('.fav-weather')
-
 const cardModal = document.querySelector('.card')
 const modalBackground = document.createElement('div')
+
+// Create a modal background for the card
 modalBackground.classList.add('modal-background')
 document.body.appendChild(modalBackground)
 
+// Function to check weather for a given city
 async function checkWeather(city) {
     const response = await fetch(apiUrl + city + `&appid=${apiKey}`)
 
@@ -19,78 +23,100 @@ async function checkWeather(city) {
     } else {
         let data = await response.json()
 
-        document.querySelector('.city').innerHTML = data.name
-        document.querySelector('.temp').innerHTML = Math.round(data.main.temp) + '°C'
-        document.querySelector('.humidity').innerHTML = data.main.humidity + '%'
-        document.querySelector('.wind').innerHTML = data.wind.speed + ' km/h'
+        document.querySelector('.city').innerHTML = data.name;
+        $('.temp').text(Math.round(data.main.temp) + '°C')
+        $('#humidity').text(data.main.humidity + '%')
+        $('#wind').text(data.wind.speed + ' km/h')
 
-        if (data.weather[0].main === 'Clouds') {
-            weatherIcon.src = 'img/cloudy.svg'
-        } else if (data.weather[0].main === 'Clear') {
-            weatherIcon.src = 'img/clear.svg'
-        } else if (data.weather[0].main === 'Rain') {
-            weatherIcon.src = 'img/rain.svg'
-        } else if (data.weather[0].main === 'Drizzle') {
-            weatherIcon.src = 'img/drizzle.svg'
-        } else if (data.weather[0].main === 'Mist') {
-            weatherIcon.src = 'img/mist.svg'
-        } else if (data.weather[0].main === 'Thunderstorm') {
-            weatherIcon.src = 'img/thunder.svg'
-        } else if (data.weather[0].main === 'Haze') {
-            weatherIcon.src = 'img/haze.svg'
-        } else if (data.weather[0].main === 'Snow') {
-            weatherIcon.src = 'img/snow.svg'
+        let weatherIconSrc = 'img/unknown.svg';
+        switch (data.weather[0].main) {
+            case 'Clouds':
+                weatherIconSrc = 'img/cloudy.svg'
+                break
+            case 'Clear':
+                weatherIconSrc = 'img/clear.svg'
+                break
+            case 'Rain':
+                weatherIconSrc = 'img/rain.svg'
+                break
+            case 'Drizzle':
+                weatherIconSrc = 'img/drizzle.svg'
+                break
+            case 'Mist':
+                weatherIconSrc = 'img/mist.svg'
+                break
+            case 'Thunderstorm':
+                weatherIconSrc = 'img/thunder.svg'
+                break
+            case 'Haze':
+                weatherIconSrc = 'img/haze.svg'
+                break
+            case 'Snow':
+                weatherIconSrc = 'img/snow.svg'
+                break
+            default:
+                weatherIconSrc = 'img/unknown.svg'
+                break
         }
 
-        document.querySelector('.card').style.display = 'block'
-        document.querySelector('.card').classList.add('modal-overlay')
+        weatherIcon.src = weatherIconSrc
+
+        cardModal.style.display = 'block'
+        cardModal.classList.add('modal-overlay')
         modalBackground.style.display = 'block'
     }
 }
 
+// Function to hide the modal
 function hideModal() {
-    document.querySelector('.card').style.display = 'none'
+    cardModal.style.display = 'none'
     modalBackground.style.display = 'none'
 }
 
+// Close the modal when the 'Escape' key is pressed
 document.onkeydown = function(e) {
     if (e.key === 'Escape') {
         hideModal()
     }
 }
 
-document.querySelector('.card').addEventListener('click', function(event) {
+// Prevent modal closure when clicking inside it
+cardModal.addEventListener('click', function(event) {
     event.stopPropagation()
 })
 
+// Close the modal when clicking outside it
 document.addEventListener('click', function(event) {
-    const card = document.querySelector('.card');
-    if (event.target !== card && !card.contains(event.target)) {
+    if (event.target !== cardModal && !cardModal.contains(event.target)) {
         hideModal()
     }
 })
 
+// Function to handle the search
 function handleSearch() {
     checkFav()
     checkWeather(searchBox.value)
 }
 
+// Event listener for the "Enter" key in the search input
 searchBox.addEventListener('keydown', (event) => {
     if (event.key === 'Enter') {
         handleSearch()
     }
 })
 
+// Event listener for the search button
 searchBtn.addEventListener('click', () => {
     handleSearch()
 })
 
+// Event listener for the favorite icon click
 favWeatherIcon.addEventListener('click', () => {
     const cityName = document.querySelector('.city').textContent
-
     addToFavorites(cityName)
 })
 
+// Function to add or remove a city from favorites
 function addToFavorites(cityName) {
     let favorites = localStorage.getItem('favorites')
     if(!favorites) {
@@ -114,6 +140,7 @@ function addToFavorites(cityName) {
     checkFav()
 }
 
+// Function to remove a city card from the homeboard section
 function removeFromHomeboard(cityName) {
     const section = document.querySelector('.homeboard')
     const cityElement = section.querySelector(`[data-city="${cityName}"]`)
@@ -122,21 +149,27 @@ function removeFromHomeboard(cityName) {
     }
 }
 
+// Function to make an API call and add a city card to the homeboard
 function addToHomeboard(cityName) {
-    fetch(apiUrl + cityName + `&appid=${apiKey}`)
-        .then(response => response.json())
-        .then(data => {
+    $.ajax({
+        url:apiUrl + cityName + `&appid=${apiKey}`,
+        method: 'GET',
+        dataType: 'json',
+        success: function(data) {
             displayWeatherInfo(data)
-        })
-        .catch(error => {
-            console.error(`Error ${cityName}: ${error}`)
-        })
+        },
+        error: function(error) {
+            console.log(`Error ${cityName}: ${error}`)
+        }
+    })
 }
 
+// Function to remove diacritics from city names
 function removeAccents(str) {
     return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
 }
 
+// Function to check if a city is in favorites local storage
 function checkFav() {
     const favorites = localStorage.getItem('favorites')
 
@@ -154,6 +187,7 @@ function checkFav() {
     }
 }
 
+// Load and display weather for cities in favorites local storage
 const favorites = localStorage.getItem('favorites')
 if (favorites) {
     const favoritesList = JSON.parse(favorites)
@@ -170,6 +204,7 @@ if (favorites) {
     })
 }
 
+// Function to display weather information for a city on the homeboard
 function displayWeatherInfo(data) {
     console.log(data)
     const section = document.querySelector('.homeboard');
@@ -178,24 +213,24 @@ function displayWeatherInfo(data) {
     div.setAttribute('data-city', data.name)
     div.innerHTML = `
         <div class="weather">
-            <picture>
+            <div class="pictures">
                 <img src="${getWeatherIcon(data.weather[0].main)}" class="weather-icon" alt="${data.weather[0].main}">
                 <img src="img/fav.svg" class="fav-weather" alt="Favorite">
-            </picture>
+            </div>
             <h1 class="temp">${Math.round(data.main.temp)}°C</h1>
             <h2 class="city">${data.name}</h2>
             <div class="details">
                 <div class="col">
-                    <img src="img/humidity.png">
+                    <img src="img/humidity.png" alt="Humidity percentage">
                     <div>
-                        <p class="humidity"></p>
+                        <p>Humidity</p>
                         <p>${data.main.humidity}%</p>
                     </div>
                 </div>
                 <div class="col">
-                    <img src="img/wind.png">
+                    <img src="img/wind.png" alt="Wind speed">
                     <div>
-                        <p class="wind"></p>
+                        <p>Wind Speed</p>
                         <p>${data.wind.speed} km/h</p>
                     </div>
                 </div>
@@ -228,6 +263,7 @@ function displayWeatherInfo(data) {
     section.appendChild(div)
 }
 
+// Function to remove a city card from favorites
 function removeFromFavorites(cityName) {
     const elementToRemove = document.querySelector(`.favorite-card[data-city="${cityName}"]`)
     if (elementToRemove) {
@@ -235,6 +271,7 @@ function removeFromFavorites(cityName) {
     }
 }
 
+// Function to get the weather icon based on weather description
 function getWeatherIcon(weatherDescription) {
     switch (weatherDescription) {
         case 'Clouds':
