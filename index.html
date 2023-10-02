@@ -8,6 +8,9 @@
     <!-- Stylesheet -->
     <link rel="stylesheet" href="style.css">
 
+    <!-- DragulaLibrary (drag & drop elements) -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/bevacqua/dragula@3.7.3/dist/dragula.min.css">
+    <script src="https://cdn.jsdelivr.net/gh/bevacqua/dragula@3.7.3/dist/dragula.min.js"></script>
     <!-- External scripts -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
@@ -15,7 +18,7 @@
     <!-- Page title -->
     <title>Weather App</title>
 </head>
-<body>
+<body onload="dragAndDrop()">
     <!-- Search header -->
     <header class="search w-full flex">
         <input class="border-0 outline-none bg-opacity-30 bg-blue-100 text-gray-500 px-6 py-4 h-16 rounded-l-full flex-1 text-xl" type="text" placeholder="Enter city name..." autofocus>
@@ -54,7 +57,7 @@
     </article>
 
     <!-- Homeboard section -->
-    <main class="homeboard">
+    <main class="homeboard" id="dragparent">
     </main>
 
     <!-- Javascript file -->

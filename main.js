@@ -23,7 +23,7 @@ async function checkWeather(city) {
     } else {
         let data = await response.json()
 
-        document.querySelector('.city').innerHTML = `${data.name}, ${data.sys.country}`;
+        document.querySelector('.city').innerHTML = `${data.name}`;
         document.querySelector('.description').innerHTML = (function(description) {
             return description.charAt(0).toUpperCase() + description.slice(1)
         })(data.weather[0].description)
@@ -257,7 +257,7 @@ function displayWeatherInfo(data, weatherType) {
                 <img src="img/fav.svg" class="fav-weather" alt="Favorite">
             </div>
             <h1 class="temp cursor-default">${Math.round(data.main.temp)}°C</h1>
-            <h2 class="city cursor-default">${data.name}, ${data.sys.country}</h2>
+            <h2 class="city cursor-default">${data.name}</h2>
             <p class="description">${capitalizedDescription}</p>
             <div class="details">
                 <div class="col cursor-default">
@@ -335,4 +335,8 @@ function getWeatherIcon(weatherDescription) {
         default:
         return 'img/unknown.svg'
     }
+}
+
+function dragAndDrop(){
+    dragula([document.querySelector('#dragparent')])
 }
