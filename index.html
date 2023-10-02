@@ -17,9 +17,11 @@
 </head>
 <body>
     <!-- Search header -->
-    <header class="search">
-        <input type="text" placeholder="Enter city" autofocus>
-        <button><img src="img/search.png" alt="Search button"></button>
+    <header class="search w-full flex">
+        <input class="border-0 outline-none bg-opacity-30 bg-blue-100 text-gray-500 px-6 py-4 h-16 rounded-l-full flex-1 text-xl" type="text" placeholder="Enter city name..." autofocus>
+        <button class="inline-block border-0 outline-none bg-opacity-30 bg-blue-200 w-16 h-16 rounded-r-full cursor-pointer">
+            <img src="img/search.png" class="inline-block w-[40%]" alt="Search button">
+        </button>
     </header>
 
     <!-- Weather card -->
@@ -29,17 +31,18 @@
                 <img src="img/rain.svg" class="weather-icon" alt="Rain weather">
                 <img src="img/fav.svg" class="fav-weather" alt="Favorite">
             </div>
-            <h1 class="temp">Temperature</h1>
-            <h2 class="city">City</h2>
+            <h1 class="temp cursor-default">Temperature</h1>
+            <h2 class="city cursor-default">City</h2>
+            <p class="description">Description</p>
             <div class="details">
-                <div class="col">
+                <div class="col cursor-default">
                     <img src="img/humidity.png" alt="Humidity percentage">
                     <div>
                         <p>Humidity</p>
                         <p id="humidity"></p>
                     </div>
                 </div>
-                <div class="col">
+                <div class="col cursor-default">
                     <img src="img/wind.png" alt="Wind speed">
                     <div>
                         <p>Wind Speed</p>

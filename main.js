@@ -23,44 +23,61 @@ async function checkWeather(city) {
     } else {
         let data = await response.json()
 
-        document.querySelector('.city').innerHTML = data.name;
-        $('.temp').text(Math.round(data.main.temp) + '°C')
-        $('#humidity').text(data.main.humidity + '%')
-        $('#wind').text(data.wind.speed + ' km/h')
+        document.querySelector('.city').innerHTML = `${data.name}, ${data.sys.country}`;
+        document.querySelector('.description').innerHTML = (function(description) {
+            return description.charAt(0).toUpperCase() + description.slice(1)
+        })(data.weather[0].description)
+        document.querySelector('.temp').innerHTML = Math.round(data.main.temp) + '°C'
+        document.querySelector('#humidity').innerHTML = data.main.humidity + '%'
+        document.querySelector('#wind').innerHTML = data.wind.speed + ' km/h'
 
         let weatherIconSrc = 'img/unknown.svg';
         switch (data.weather[0].main) {
             case 'Clouds':
                 weatherIconSrc = 'img/cloudy.svg'
+                weatherBgSrc = 'img/cloudy-nm.svg'
                 break
             case 'Clear':
                 weatherIconSrc = 'img/clear.svg'
+                weatherBgSrc = 'img/clear-nm.svg'
                 break
             case 'Rain':
                 weatherIconSrc = 'img/rain.svg'
+                weatherBgSrc = 'img/rain-nm.svg'
                 break
             case 'Drizzle':
                 weatherIconSrc = 'img/drizzle.svg'
+                weatherBgSrc = 'img/drizzle-nm.svg'
                 break
             case 'Mist':
                 weatherIconSrc = 'img/mist.svg'
+                weatherBgSrc = 'img/mist-nm.svg'
                 break
             case 'Thunderstorm':
                 weatherIconSrc = 'img/thunder.svg'
+                weatherBgSrc = 'img/thunder-nm.svg'
                 break
             case 'Haze':
                 weatherIconSrc = 'img/haze.svg'
+                weatherBgSrc = 'img/haze-nm.svg'
                 break
             case 'Snow':
                 weatherIconSrc = 'img/snow.svg'
+                weatherBgSrc = 'img/snow-nm.svg'
+                break
+            case 'Fog':
+                weatherIconSrc = 'img/fog.svg'
+                weatherBgSrc = 'img/fog-nm.svg'
                 break
             default:
                 weatherIconSrc = 'img/unknown.svg'
+                weatherBgSrc = 'img/unknown.svg'
                 break
         }
 
         weatherIcon.src = weatherIconSrc
 
+        cardModal.style.setProperty('--bgImg', `url(${weatherBgSrc})`)
         cardModal.style.display = 'block'
         cardModal.classList.add('modal-overlay')
         modalBackground.style.display = 'block'
@@ -196,7 +213,9 @@ if (favorites) {
         fetch(apiUrl + cityName + `&appid=${apiKey}`)
             .then(response => response.json())
             .then(data => {
-                displayWeatherInfo(data)
+                const weatherType = data.weather[0].main
+                displayWeatherInfo(data, weatherType)
+                console.log(data)
             })
             .catch(error => {
                 console.error(`Error ${cityName}: ${error}`)
@@ -204,30 +223,51 @@ if (favorites) {
     })
 }
 
+// Weather conditions backgrounds
+const weatherBackgrounds = {
+    'Clouds': 'url(img/cloudy-nm.svg)',
+    'Clear': 'url(img/clear-nm.svg)',
+    'Rain': 'url(img/rain-nm.svg)',
+    'Drizzle': 'url(img/drizzle-nm.svg)',
+    'Mist': 'url(img/mist-nm.svg)',
+    'Thunderstorm': 'url(img/thunder-nm.svg)',
+    'Haze': 'url(img/haze-nm.svg)',
+    'Snow': 'url(img/snow-nm.svg)',
+    'Fog': 'url(img/fog-nm.svg)',
+    'Unknown': 'url(img/unknown.svg)'
+}
+
 // Function to display weather information for a city on the homeboard
-function displayWeatherInfo(data) {
-    console.log(data)
+function displayWeatherInfo(data, weatherType) {
+    const backgroundUrl = weatherBackgrounds[weatherType]
     const section = document.querySelector('.homeboard');
     const div = document.createElement('div')
+    div.style.setProperty('--bgImg2', backgroundUrl)
     div.classList.add('favorite-card')
     div.setAttribute('data-city', data.name)
+
+    const capitalizedDescription = (function(description) {
+        return description.charAt(0).toUpperCase() + description.slice(1)
+    })(data.weather[0].description)
+
     div.innerHTML = `
         <div class="weather">
             <div class="pictures">
                 <img src="${getWeatherIcon(data.weather[0].main)}" class="weather-icon" alt="${data.weather[0].main}">
                 <img src="img/fav.svg" class="fav-weather" alt="Favorite">
             </div>
-            <h1 class="temp">${Math.round(data.main.temp)}°C</h1>
-            <h2 class="city">${data.name}</h2>
+            <h1 class="temp cursor-default">${Math.round(data.main.temp)}°C</h1>
+            <h2 class="city cursor-default">${data.name}, ${data.sys.country}</h2>
+            <p class="description">${capitalizedDescription}</p>
             <div class="details">
-                <div class="col">
+                <div class="col cursor-default">
                     <img src="img/humidity.png" alt="Humidity percentage">
                     <div>
                         <p>Humidity</p>
                         <p>${data.main.humidity}%</p>
                     </div>
                 </div>
-                <div class="col">
+                <div class="col cursor-default">
                     <img src="img/wind.png" alt="Wind speed">
                     <div>
                         <p>Wind Speed</p>
@@ -290,8 +330,9 @@ function getWeatherIcon(weatherDescription) {
         return 'img/thunder.svg'
         case 'Snow':
         return 'img/snow.svg'
+        case 'Fog':
+        return 'img/fog.svg'
         default:
         return 'img/unknown.svg'
     }
 }
-

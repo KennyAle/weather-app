@@ -8,7 +8,7 @@
     height="64"
     viewbox="0 0 64 64">
     <defs>
-        <filter id="blur" width="300%" height="300%">
+        <filter id="blur" width="200%" height="200%">
             <feGaussianBlur in="SourceAlpha" stdDeviation="3"/>
             <feOffset dx="0" dy="4" result="offsetblur"/>
             <feComponentTransfer>
@@ -489,7 +489,7 @@
     </defs>
     <g filter="url(#blur)" id="day">
         <g transform="translate(32,32)">
-            <g class="am-weather-sun am-weather-sun-shiny am-weather-easing-ease-in-out">
+            <g>
                 <g>
                     <line fill="none" stroke="orange" stroke-linecap="round" stroke-width="2" transform="translate(0,9)" x1="0" x2="0" y1="0" y2="3" />
                 </g>
