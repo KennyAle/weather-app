@@ -14,6 +14,19 @@ const modalBackground = document.createElement('div')
 modalBackground.classList.add('modal-background')
 document.body.appendChild(modalBackground)
 
+
+const apiForecast = 'https://api.openweathermap.org/data/2.5/forecast?units=metric&q='
+async function checkWeatherForecast(city) {
+    const response = await fetch(apiForecast + city + `&appid=${apiKey}`)
+
+    if (response.status == 404) {
+        alert(`${searchBox.value} is not a City`)
+    } else {
+        let data = await response.json()
+        console.log(data)
+    }
+}
+
 // Function to check weather for a given city
 async function checkWeather(city) {
     const response = await fetch(apiUrl + city + `&appid=${apiKey}`)
@@ -23,7 +36,8 @@ async function checkWeather(city) {
     } else {
         let data = await response.json()
 
-        document.querySelector('.city').innerHTML = `${data.name}`;
+        document.querySelector('.city').innerHTML = `${data.name}`
+        document.querySelector('.country').innerHTML = `, ${data.sys.country}`
         document.querySelector('.description').innerHTML = (function(description) {
             return description.charAt(0).toUpperCase() + description.slice(1)
         })(data.weather[0].description)
@@ -113,6 +127,7 @@ document.addEventListener('click', function(event) {
 function handleSearch() {
     checkFav()
     checkWeather(searchBox.value)
+    checkWeatherForecast(searchBox.value)
 }
 
 // Event listener for the "Enter" key in the search input
@@ -251,13 +266,14 @@ function displayWeatherInfo(data, weatherType) {
     })(data.weather[0].description)
 
     div.innerHTML = `
+        <img src="img/fav.svg" class="fav-weather" alt="Favorite">
         <div class="weather">
             <div class="pictures">
-                <img src="${getWeatherIcon(data.weather[0].main)}" class="weather-icon" alt="${data.weather[0].main}">
-                <img src="img/fav.svg" class="fav-weather" alt="Favorite">
+                <img src="${getWeatherIcon(data.weather[0].main)}" class="weather-icon" alt="${data.weather[0].description}">
             </div>
             <h1 class="temp cursor-default">${Math.round(data.main.temp)}°C</h1>
-            <h2 class="city cursor-default">${data.name}</h2>
+            <h2 class="city inline-block cursor-default">${data.name}</h2>
+            <h2 class="country inline-block cursor-default">, ${data.sys.country}</h2>
             <p class="description">${capitalizedDescription}</p>
             <div class="details">
                 <div class="col cursor-default">
@@ -274,6 +290,15 @@ function displayWeatherInfo(data, weatherType) {
                         <p>${data.wind.speed} km/h</p>
                     </div>
                 </div>
+            </div>
+        </div>
+        <div class="back">
+            <h2>Forecast</h2>
+            <div class="forecast">
+                <p class="fdate">Date</p>
+                <img class="fimg" src="img/cloudy.svg" alt="cloudy weather">
+                <p class="fdescription">Description</p>
+                <p class="ftemp">36/22 °C</p>
             </div>
         </div>`
     
@@ -340,3 +365,4 @@ function getWeatherIcon(weatherDescription) {
 function dragAndDrop(){
     dragula([document.querySelector('#dragparent')])
 }
+

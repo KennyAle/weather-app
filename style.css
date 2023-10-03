@@ -1,35 +1,67 @@
 /* Weather card styles */
 .card {
     display: none;
+    position: relative;
     width: 100%;
     max-width: 440px;
     background: white;
     border: solid 1px rgba(0, 0, 0, 0.2);
     border-radius: 20px;
-    padding: 2rem 1.5rem;
     text-align: center;
     overflow: hidden;
 }
 
-.card::before {
-    content: ' ';
-    display: block;
-    position: absolute;
-    left: 70%;
-    top: 80%;
-    transform: translate(-50%, -50%);
-    width: 150%;
-    height: 150%;
-    opacity: 0.1;
-    background-image: var(--bgImg);
-    background-repeat: no-repeat;
-    background-position: center;
-    background-size: cover;
+.card:hover .back {
+    z-index: 10;
 }
 
 /* Weather details styles */
 .weather {
     position: relative;
+    background-color: white;
+    padding: 2rem 1.5rem;
+    z-index: 5;
+}
+
+.back {
+    width: 100%;
+    height: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+    padding: 2rem 1.5rem;
+    background: white;
+    overflow: scroll;
+    z-index: 0;
+}
+
+.back::-webkit-scrollbar {
+    display: none;
+}
+
+.back h2 {
+    padding: 2rem 0;
+    width: 100%;
+    position: fixed;
+    top: 0;
+    background-color: white;
+    text-align: left;
+}
+
+.forecast {
+    display: grid;
+    justify-content: center;
+    align-items: center;
+    grid-template-columns: repeat(4, 1fr);
+    border-bottom: solid 1px rgba(84, 84, 84, 0.2);
+}
+
+.fdate, .fdescription {
+    justify-self: flex-start;
+}
+
+.ftemp, .fimg {
+    justify-self: flex-end;
 }
 
 .pictures {
@@ -38,17 +70,18 @@
 }
 
 .fav-weather {
-    position: relative;
+    margin: 1.5rem;
+    position: absolute;
+    right: 0;
     width: 37px;
-    align-self: flex-start;
-    justify-self: flex-end;
     cursor: pointer;
-    transition: opacity 180ms ease-in-out, transform 200ms ease-in-out;
+    z-index: 15;
+    transition: opacity 200ms ease-in-out, transform 150ms ease-in-out;
 }
 
 .fav-weather:hover {
-    opacity: 0.5;
-    transform: scale(1.1);
+    opacity: 0.6;
+    transform: scale(1.2);
 }
 
 .weather-icon {
@@ -120,18 +153,21 @@
 .favorite-card {
     position: relative;
     width: 100%;
-    background: linear-gradient(rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.9)), var(--bgImg2);
-    background-position: 3% -80%;
-    background-size: 160%;
-    background-repeat: no-repeat;
+    background: white;
     border: solid 1px rgba(0, 0, 0, 0.2);
     border-radius: 20px;
-    padding: 2rem 1.5rem;
     text-align: center;
-    overflow: hidden;
+    overflow: scroll;
     transition: background-color 0.3s ease-in-out;
 }
 
+.favorite-card::-webkit-scrollbar {
+    display: none;
+}
+
+.favorite-card:hover .back{
+    z-index: 10;
+}
 /* Modal overlay styles */
 .modal-overlay {
     position: fixed;
@@ -171,16 +207,12 @@
 /* Responsive styles for small screens */
 @media all and (max-width: 480px) {
 
-.card {
+.weather {
     padding: 2rem 1rem;
 }
 
 .card .col {
     font-size: 1.2rem;
-}
-
-.favorite-card {
-    padding: 2rem 1rem;
 }
 
 .details {

@@ -21,7 +21,7 @@
 <body onload="dragAndDrop()">
     <!-- Search header -->
     <header class="search w-full flex">
-        <input class="border-0 outline-none bg-opacity-30 bg-blue-100 text-gray-500 px-6 py-4 h-16 rounded-l-full flex-1 text-xl" type="text" placeholder="Enter city name..." autofocus>
+        <input class="border-0 outline-none text-gray-500 px-6 py-4 h-16 rounded-l-full flex-1 text-xl" type="text" placeholder="Enter city name..." autofocus>
         <button class="inline-block border-0 outline-none bg-opacity-30 bg-blue-200 w-16 h-16 rounded-r-full cursor-pointer">
             <img src="img/search.png" class="inline-block w-[40%]" alt="Search button">
         </button>
@@ -29,13 +29,14 @@
 
     <!-- Weather card -->
     <article class="card">
+        <img src="img/fav.svg" class="fav-weather" alt="Favorite">
         <div class="weather">
             <div class="pictures">
                 <img src="img/rain.svg" class="weather-icon" alt="Rain weather">
-                <img src="img/fav.svg" class="fav-weather" alt="Favorite">
             </div>
             <h1 class="temp cursor-default">Temperature</h1>
-            <h2 class="city cursor-default">City</h2>
+            <h2 class="city inline-block cursor-default">City</h2>
+            <h2 class="country inline-block cursor-default">Country</h2>
             <p class="description">Description</p>
             <div class="details">
                 <div class="col cursor-default">
@@ -54,10 +55,85 @@
                 </div>
             </div>
         </div>
+        <div class="back">
+            <h2>Forecast</h2>
+            <div class="forecast">
+                <p class="fdate">Date</p>
+                <img class="fimg" src="img/cloudy.svg" alt="cloudy weather">
+                <p class="fdescription">Description</p>
+                <p class="ftemp">36/22 °C</p>
+            </div>
+            <div class="forecast">
+                <p class="fdate">Date</p>
+                <img class="fimg" src="img/cloudy.svg" alt="cloudy weather">
+                <p class="fdescription">Description</p>
+                <p class="ftemp">36/22 °C</p>
+            </div>
+            <div class="forecast">
+                <p class="fdate">Date</p>
+                <img class="fimg" src="img/cloudy.svg" alt="cloudy weather">
+                <p class="fdescription">Description</p>
+                <p class="ftemp">36/22 °C</p>
+            </div>
+            <div class="forecast">
+                <p class="fdate">Date</p>
+                <img class="fimg" src="img/cloudy.svg" alt="cloudy weather">
+                <p class="fdescription">Description</p>
+                <p class="ftemp">36/22 °C</p>
+            </div>
+            <div class="forecast">
+                <p class="fdate">Date</p>
+                <img class="fimg" src="img/cloudy.svg" alt="cloudy weather">
+                <p class="fdescription">Description</p>
+                <p class="ftemp">36/22 °C</p>
+            </div>
+            <div class="forecast">
+                <p class="fdate">Date</p>
+                <img class="fimg" src="img/cloudy.svg" alt="cloudy weather">
+                <p class="fdescription">Description</p>
+                <p class="ftemp">36/22 °C</p>
+            </div>
+            <div class="forecast">
+                <p class="fdate">Date</p>
+                <img class="fimg" src="img/cloudy.svg" alt="cloudy weather">
+                <p class="fdescription">Description</p>
+                <p class="ftemp">36/22 °C</p>
+            </div>
+            <div class="forecast">
+                <p class="fdate">Date</p>
+                <img class="fimg" src="img/cloudy.svg" alt="cloudy weather">
+                <p class="fdescription">Description</p>
+                <p class="ftemp">36/22 °C</p>
+            </div>
+            <div class="forecast">
+                <p class="fdate">Date</p>
+                <img class="fimg" src="img/cloudy.svg" alt="cloudy weather">
+                <p class="fdescription">Description</p>
+                <p class="ftemp">36/22 °C</p>
+            </div>
+            <div class="forecast">
+                <p class="fdate">Date</p>
+                <img class="fimg" src="img/cloudy.svg" alt="cloudy weather">
+                <p class="fdescription">Description</p>
+                <p class="ftemp">36/22 °C</p>
+            </div>
+            <div class="forecast">
+                <p class="fdate">Date</p>
+                <img class="fimg" src="img/cloudy.svg" alt="cloudy weather">
+                <p class="fdescription">Description</p>
+                <p class="ftemp">36/22 °C</p>
+            </div>
+            <div class="forecast">
+                <p class="fdate">Date</p>
+                <img class="fimg" src="img/cloudy.svg" alt="cloudy weather">
+                <p class="fdescription">Description</p>
+                <p class="ftemp">36/22 °C</p>
+            </div>
+        </div>
     </article>
 
     <!-- Homeboard section -->
-    <main class="homeboard" id="dragparent">
+    <main class="homeboard bg-blue-100 bg-opacity-30" id="dragparent">
     </main>
 
     <!-- Javascript file -->
