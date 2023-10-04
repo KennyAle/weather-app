@@ -38,7 +38,6 @@ async function checkWeatherForecast(city) {
         let data = await response.json()
         if (data.hasOwnProperty('list')) {
             data.list.forEach((item, index) => {
-                console.log(`Forecast for ${searchBox.value} ${index + 1}:`, item)
                 const backCard = document.querySelector('.back')
                 const div = document.createElement('div')
                 div.classList.add('forecast')
@@ -77,7 +76,7 @@ async function checkWeather(city) {
         document.querySelector('#humidity').innerHTML = data.main.humidity + '%'
         document.querySelector('#wind').innerHTML = data.wind.speed + ' km/h'
 
-        let weatherIconSrc = 'img/unknown.svg';
+        let weatherIconSrc = 'img/unknown.svg'
         switch (data.weather[0].main) {
             case 'Clouds':
                 weatherIconSrc = 'img/cloudy.svg'
@@ -230,7 +229,7 @@ function addToHomeboard(cityName) {
 
 // Function to remove diacritics from city names
 function removeAccents(str) {
-    return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+    return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "")
 }
 
 // Function to check if a city is in favorites local storage
@@ -240,8 +239,6 @@ function checkFav() {
     if (favorites) {
         const favoritesList = JSON.parse(favorites).map(city => removeAccents(city.toLowerCase()))     
         const cityName = removeAccents(searchBox.value.toLowerCase())
-
-        console.log('Favorites List:', favoritesList);
 
         if (favoritesList.includes(cityName)) {
             favWeatherIcon.src = 'img/fav-red.svg'
@@ -262,7 +259,6 @@ if (favorites) {
             .then(data => {
                 displayWeatherInfo(data)
                 getForecastForCity(cityName)
-                console.log(data)
             })
             .catch(error => {
                 console.error(`Error ${cityName}: ${error}`)
@@ -286,7 +282,7 @@ const weatherBackgrounds = {
 
 // Function to display weather information for a city on the homeboard
 function displayWeatherInfo(data) {
-    const section = document.querySelector('.homeboard');
+    const section = document.querySelector('.homeboard')
     const div = document.createElement('div')
     div.classList.add('favorite-card')
     div.setAttribute('data-city', data.name)
@@ -390,16 +386,15 @@ function getWeatherIcon(weatherDescription) {
 // Function to get forecast for a city
 async function getForecastForCity(cityName) {
     try {
-        const response = await fetch(apiForecast + cityName + `&appid=${apiKey}`);
+        const response = await fetch(apiForecast + cityName + `&appid=${apiKey}`)
 
         if (response.status == 404) {
-            console.log(`${cityName} is not a City`);
+            console.log(`${cityName} is not a City`)
         } else {
-            const data = await response.json();
+            const data = await response.json()
             if (data.hasOwnProperty('list')) {
-                const cityContainer = document.querySelector(`.favorite-card[data-city="${cityName}"] .back`);
+                const cityContainer = document.querySelector(`.favorite-card[data-city="${cityName}"] .back`)
                 data.list.forEach((item, index) => {
-                    console.log(`Forecast for ${cityName}, Forecast: ${index + 1}`, item);
                     const div = document.createElement('div')
                     div.classList.add('forecast')
                     div.innerHTML = `
@@ -412,12 +407,42 @@ async function getForecastForCity(cityName) {
                     <p class="ftemp">${Math.round(item.main.temp)}°C</p>`
 
                     cityContainer.appendChild(div)
-                });
+                })
             } else {
-                console.log(`No forecast found for ${cityName}`);
+                console.log(`No forecast found for ${cityName}`)
             }
         }
     } catch (error) {
-        console.error(`Error fetching forecast for ${cityName}: ${error}`);
+        console.error(`Error fetching forecast for ${cityName}: ${error}`)
     }
 }
+
+function dragAndDrop(){
+    dragula([document.querySelector('#dragparent')])
+}
+
+let isMouseDown = false
+
+document.addEventListener('mousedown', () => {
+  isMouseDown = true
+})
+
+document.addEventListener('mousemove', () => {
+  if (isMouseDown) {
+    const backElements = document.querySelectorAll('.back')
+    backElements.forEach((backElement) => {
+        backElement.style.display = 'none'
+      })
+  }
+})
+
+document.addEventListener('mouseup', () => {
+    isMouseDown = false
+    const backElements = document.querySelectorAll('.back')
+    backElements.forEach((backElement) => {
+        backElement.style.display = ''
+      })
+  })
+  
+
+
