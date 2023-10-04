@@ -23,6 +23,11 @@
 body {
     background-color: var(--primary-color);
     color: var(--primary-font);
+    transition: background-color 0.5s ease-in-out;
+}
+
+.map {
+    width: 100%;
 }
 
 .toggle {
@@ -39,6 +44,7 @@ body {
     background-color: var(--tertiary-color);
     color: var(--primary-font);
     border: 1px solid rgba(0, 0, 0, 0.14);
+    transition: background-color 0.3s ease-in-out;
 }
 
 input::placeholder{
@@ -69,6 +75,7 @@ input::placeholder{
     padding: 2rem 1.5rem;
     z-index: 5;
     box-shadow: inset 0px -12px 50px -12px rgba(0,0,0,0.16);
+    transition: background-color 0.3s ease-in-out;
 }
 
 .back {
@@ -78,7 +85,6 @@ input::placeholder{
     top: 0;
     left: 0;
     margin-top: 1px;
-    padding: 0 1.5rem;
     background: var(--tertiary-color);
     overflow: scroll;
     z-index: 0;
@@ -93,11 +99,10 @@ input::placeholder{
 
 .back h2 {
     padding: 1rem 1.5rem;
-    width: calc(100% + 3rem);
+    width: 100%;
     position: sticky;
     top: 0;
     left: 0;
-    transform: translateX(-1.5rem);
     background-color: var(--tertiary-color);
     text-align: left;
     box-shadow: inset 0px 20px 50px -20px rgba(0,0,0,0.09);
@@ -117,6 +122,13 @@ input::placeholder{
     border-bottom: solid 1px var(--secondary-color);
     scroll-snap-align: end;
     cursor: default;
+    padding: 0 1.5rem;
+    transition: background-color 0.1s ease-out, color 0.1s;
+}
+
+.forecast:hover {
+    background-color: var(--primary-font);
+    color: var(--tertiary-color);
 }
 
 .fdate, .fdescription {
@@ -196,6 +208,7 @@ input::placeholder{
 
 /* Homeboard section styles */
 .homeboard {
+    perspective: 500px;
     display: grid;
     padding: 2rem;
     grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
@@ -224,7 +237,6 @@ input::placeholder{
     border-radius: 20px;
     text-align: center;
     overflow: scroll;
-    transition: background-color 0.3s ease-in-out;
     -ms-overflow-style: none;
     scrollbar-width: none;
 }
@@ -261,14 +273,17 @@ input::placeholder{
 /* Keyframe animation for floating effect */
 @keyframes float {
 	0% {
-		transform: translatey(0px);
+		transform: translatey(0px); /*translateZ(0) rotateX(0deg) rotateY(0deg)*/
+;
 	}
 	50% {
 		box-shadow: 0 25px 25px 0px var(--secondary-color);
-		transform: translatey(-8px);
+		transform: translatey(-8px); /*translateZ(0) rotateX(5deg) rotateY(0deg)*/
+;
 	}
 	100% {
-		transform: translatey(0px);
+		transform: translatey(0px); /*translateZ(0) rotateX(0deg) rotateY(0deg)*/
+;
 	}
 }
 

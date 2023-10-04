@@ -10,6 +10,25 @@ const favWeatherIcon = document.querySelector('.fav-weather')
 const cardModal = document.querySelector('.card')
 const modalBackground = document.createElement('div')
 
+/*
+const mapUrl = 'https://tile.openweathermap.org/map/'
+// https://tile.openweathermap.org/map/{layer}/{z}/{x}/{y}.png?appid={API key}
+async function checkWeatherTest() {
+    const response = await fetch(mapUrl + 'temp_new/' + '0/' + '0/' + '0' + `.png?appid=${apiKey}`)
+
+    if (response.status == 404) {
+        alert(`${searchBox.value} is not a City`)
+    } else {
+        console.log(response)
+        const image = document.createElement('img')
+        image.classList.add('map')
+        image.src = URL.createObjectURL(await response.blob())
+        const firstChild = document.body.firstChild
+        document.body.insertBefore(image, firstChild)
+    }
+}
+*/
+
 // Create a modal background for the card
 modalBackground.classList.add('modal-background')
 document.body.appendChild(modalBackground)
