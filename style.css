@@ -29,10 +29,11 @@
     position: fixed;
     top: 0;
     left: 0;
-    padding: 2rem 1.5rem;
+    padding: 0 1.5rem;
     background: white;
     overflow: scroll;
     z-index: 0;
+    scroll-snap-type: y mandatory;
 }
 
 .back::-webkit-scrollbar {
@@ -40,9 +41,9 @@
 }
 
 .back h2 {
-    padding: 2rem 0;
+    padding: 1rem 0;
     width: 100%;
-    position: fixed;
+    position: sticky;
     top: 0;
     background-color: white;
     text-align: left;
@@ -54,6 +55,7 @@
     align-items: center;
     grid-template-columns: repeat(4, 1fr);
     border-bottom: solid 1px rgba(84, 84, 84, 0.2);
+    scroll-snap-align: end;
 }
 
 .fdate, .fdescription {
@@ -70,7 +72,7 @@
 }
 
 .fav-weather {
-    margin: 1.5rem;
+    margin: 1rem;
     position: absolute;
     right: 0;
     width: 37px;

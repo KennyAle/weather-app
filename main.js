@@ -14,6 +14,19 @@ const modalBackground = document.createElement('div')
 modalBackground.classList.add('modal-background')
 document.body.appendChild(modalBackground)
 
+function getDayOfWeek(dateString) {
+    const options = { weekday: 'short' }
+    const date = new Date(dateString)
+    return date.toLocaleDateString('en-US', options)
+}
+function getHourFromDate(dateString) {
+    const date = new Date(dateString)
+    const hour = date.getHours()
+    const ampm = hour >= 12 ? 'PM' : 'AM'
+    const ampmHour = hour % 12 === 0 ? 12 : hour % 12
+    return `${ampmHour}${ampm}`
+}
+
 
 const apiForecast = 'https://api.openweathermap.org/data/2.5/forecast?units=metric&q='
 async function checkWeatherForecast(city) {
@@ -23,7 +36,26 @@ async function checkWeatherForecast(city) {
         alert(`${searchBox.value} is not a City`)
     } else {
         let data = await response.json()
-        console.log(data)
+        if (data.hasOwnProperty('list')) {
+            data.list.forEach((item, index) => {
+                console.log(`Forecast for ${searchBox.value} ${index + 1}:`, item)
+                const backCard = document.querySelector('.back')
+                const div = document.createElement('div')
+                div.classList.add('forecast')
+                div.innerHTML = `
+                <div class="flex justify-between">
+                    <p class="fdate">${getDayOfWeek(item.dt_txt)}</p>
+                    <p class="fdatetime">${getHourFromDate(item.dt_txt)}</p>
+                </div>
+                <img class="fimg" src="${getWeatherIcon(item.weather[0].main)}" alt="${(item.weather[0].description)}">
+                <p class="fdescription">${item.weather[0].main}</p>
+                <p class="ftemp">${Math.round(item.main.temp)}°C</p>`
+
+                backCard.appendChild(div)
+            })
+        } else {
+            console.log('Not found')
+        }
     }
 }
 
@@ -91,7 +123,6 @@ async function checkWeather(city) {
 
         weatherIcon.src = weatherIconSrc
 
-        cardModal.style.setProperty('--bgImg', `url(${weatherBgSrc})`)
         cardModal.style.display = 'block'
         cardModal.classList.add('modal-overlay')
         modalBackground.style.display = 'block'
@@ -146,6 +177,7 @@ searchBtn.addEventListener('click', () => {
 favWeatherIcon.addEventListener('click', () => {
     const cityName = document.querySelector('.city').textContent
     addToFavorites(cityName)
+    getForecastForCity(cityName)
 })
 
 // Function to add or remove a city from favorites
@@ -228,8 +260,8 @@ if (favorites) {
         fetch(apiUrl + cityName + `&appid=${apiKey}`)
             .then(response => response.json())
             .then(data => {
-                const weatherType = data.weather[0].main
-                displayWeatherInfo(data, weatherType)
+                displayWeatherInfo(data)
+                getForecastForCity(cityName)
                 console.log(data)
             })
             .catch(error => {
@@ -253,11 +285,9 @@ const weatherBackgrounds = {
 }
 
 // Function to display weather information for a city on the homeboard
-function displayWeatherInfo(data, weatherType) {
-    const backgroundUrl = weatherBackgrounds[weatherType]
+function displayWeatherInfo(data) {
     const section = document.querySelector('.homeboard');
     const div = document.createElement('div')
-    div.style.setProperty('--bgImg2', backgroundUrl)
     div.classList.add('favorite-card')
     div.setAttribute('data-city', data.name)
 
@@ -293,14 +323,9 @@ function displayWeatherInfo(data, weatherType) {
             </div>
         </div>
         <div class="back">
-            <h2>Forecast</h2>
-            <div class="forecast">
-                <p class="fdate">Date</p>
-                <img class="fimg" src="img/cloudy.svg" alt="cloudy weather">
-                <p class="fdescription">Description</p>
-                <p class="ftemp">36/22 °C</p>
-            </div>
-        </div>`
+            <h2>5 day / 3 hour Forecast</h2>
+        </div>
+        `
     
         const favWeatherElement = div.querySelector('.fav-weather')
         const cityName = data.name
@@ -362,7 +387,37 @@ function getWeatherIcon(weatherDescription) {
     }
 }
 
-function dragAndDrop(){
-    dragula([document.querySelector('#dragparent')])
-}
+// Function to get forecast for a city
+async function getForecastForCity(cityName) {
+    try {
+        const response = await fetch(apiForecast + cityName + `&appid=${apiKey}`);
 
+        if (response.status == 404) {
+            console.log(`${cityName} is not a City`);
+        } else {
+            const data = await response.json();
+            if (data.hasOwnProperty('list')) {
+                const cityContainer = document.querySelector(`.favorite-card[data-city="${cityName}"] .back`);
+                data.list.forEach((item, index) => {
+                    console.log(`Forecast for ${cityName}, Forecast: ${index + 1}`, item);
+                    const div = document.createElement('div')
+                    div.classList.add('forecast')
+                    div.innerHTML = `
+                    <div class="flex flex-wrap justify-between">
+                        <p class="fdate">${getDayOfWeek(item.dt_txt)}</p>
+                        <p class="fdatetime">${getHourFromDate(item.dt_txt)}</p>
+                    </div>
+                    <img class="fimg" src="${getWeatherIcon(item.weather[0].main)}" alt="${(item.weather[0].description)}">
+                    <p class="fdescription">${item.weather[0].main}</p>
+                    <p class="ftemp">${Math.round(item.main.temp)}°C</p>`
+
+                    cityContainer.appendChild(div)
+                });
+            } else {
+                console.log(`No forecast found for ${cityName}`);
+            }
+        }
+    } catch (error) {
+        console.error(`Error fetching forecast for ${cityName}: ${error}`);
+    }
+}
