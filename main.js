@@ -80,43 +80,33 @@ async function checkWeather(city) {
         switch (data.weather[0].main) {
             case 'Clouds':
                 weatherIconSrc = 'img/cloudy.svg'
-                weatherBgSrc = 'img/cloudy-nm.svg'
                 break
             case 'Clear':
                 weatherIconSrc = 'img/clear.svg'
-                weatherBgSrc = 'img/clear-nm.svg'
                 break
             case 'Rain':
                 weatherIconSrc = 'img/rain.svg'
-                weatherBgSrc = 'img/rain-nm.svg'
                 break
             case 'Drizzle':
                 weatherIconSrc = 'img/drizzle.svg'
-                weatherBgSrc = 'img/drizzle-nm.svg'
                 break
             case 'Mist':
                 weatherIconSrc = 'img/mist.svg'
-                weatherBgSrc = 'img/mist-nm.svg'
                 break
             case 'Thunderstorm':
                 weatherIconSrc = 'img/thunder.svg'
-                weatherBgSrc = 'img/thunder-nm.svg'
                 break
             case 'Haze':
                 weatherIconSrc = 'img/haze.svg'
-                weatherBgSrc = 'img/haze-nm.svg'
                 break
             case 'Snow':
                 weatherIconSrc = 'img/snow.svg'
-                weatherBgSrc = 'img/snow-nm.svg'
                 break
             case 'Fog':
                 weatherIconSrc = 'img/fog.svg'
-                weatherBgSrc = 'img/fog-nm.svg'
                 break
             default:
                 weatherIconSrc = 'img/unknown.svg'
-                weatherBgSrc = 'img/unknown.svg'
                 break
         }
 
@@ -225,6 +215,7 @@ function addToHomeboard(cityName) {
             console.log(`Error ${cityName}: ${error}`)
         }
     })
+    console.log(`addToHomeboard: Adding city to homeboard - ${cityName}`)
 }
 
 // Function to remove diacritics from city names
@@ -250,20 +241,38 @@ function checkFav() {
 
 // Load and display weather for cities in favorites local storage
 const favorites = localStorage.getItem('favorites')
+const elementOrder = JSON.parse(localStorage.getItem('elementOrder'))
 if (favorites) {
-    const favoritesList = JSON.parse(favorites)
+    const elementOrder = JSON.parse(localStorage.getItem('elementOrder'))
 
-    favoritesList.forEach(cityName => {
-        fetch(apiUrl + cityName + `&appid=${apiKey}`)
-            .then(response => response.json())
-            .then(data => {
-                displayWeatherInfo(data)
-                getForecastForCity(cityName)
+    if (favorites && elementOrder) {
+        const apiCalls = elementOrder.map(cityName => {
+            if (favorites.includes(cityName)) {
+                return fetch(apiUrl + cityName + `&appid=${apiKey}`)
+                        .then(response => response.json())
+                        .then(data => {
+                            return {cityName, data}
+                        })
+                        .catch(error => {
+                            console.error(`Error ${cityName}: ${error}`)
+                            return null
+                        })
+            }
+            return null
+        })
+
+        Promise.all(apiCalls)
+            .then(cityDataArray => {
+                const validCityDataArray = cityDataArray.filter(cityData => cityData !== null)
+                validCityDataArray.forEach(({cityName, data}) => {
+                    displayWeatherInfo(data)
+                    getForecastForCity(cityName)
+                })
             })
             .catch(error => {
-                console.error(`Error ${cityName}: ${error}`)
+                console.log('Promise call eror', error)
             })
-    })
+    }
 }
 
 // Weather conditions backgrounds
@@ -286,6 +295,7 @@ function displayWeatherInfo(data) {
     const div = document.createElement('div')
     div.classList.add('favorite-card')
     div.setAttribute('data-city', data.name)
+    div.setAttribute('data-id', data.name)
 
     const capitalizedDescription = (function(description) {
         return description.charAt(0).toUpperCase() + description.slice(1)
@@ -347,6 +357,12 @@ function displayWeatherInfo(data) {
         })
     
     section.appendChild(div)
+
+    // Update elementOrder based on the current order of city cards
+    const draggableElements = document.querySelectorAll('.favorite-card')
+    const order = Array.from(draggableElements).map(element => element.dataset.id)
+    const uniqueOrder = [... new Set(order)]
+    localStorage.setItem('elementOrder', JSON.stringify(uniqueOrder))
 }
 
 // Function to remove a city card from favorites
@@ -418,8 +434,20 @@ async function getForecastForCity(cityName) {
 }
 
 function dragAndDrop(){
-    dragula([document.querySelector('#dragparent')])
+    const homeboard = document.querySelector('#dragparent')
+    const drake = dragula([homeboard])
+
+    drake.on('drop', function() {
+        const draggableElements = document.querySelectorAll('.favorite-card')
+        const order = Array.from(draggableElements).map(element => element.dataset.id)
+
+        const uniqueOrder = [...new Set(order)]
+        localStorage.setItem('elementOrder', JSON.stringify(uniqueOrder))
+    })
+
 }
+
+window.onload = dragAndDrop;
 
 let isMouseDown = false
 
@@ -443,6 +471,30 @@ document.addEventListener('mouseup', () => {
         backElement.style.display = ''
       })
   })
+
+const toggleTheme = document.querySelector('.toggle')
+const body = document.body
+
+const savedTheme = localStorage.getItem('theme')
+
+if (savedTheme) {
+    body.classList.add(savedTheme)
+} if (savedTheme === 'dark-theme') {
+    toggleTheme.src = 'img/light.svg'
+} else {
+    toggleTheme.src = 'img/night.svg'
+}
+
+toggleTheme.onclick = function() {
+    body.classList.toggle('dark-theme')
+    if(body.classList.contains('dark-theme')) {
+        toggleTheme.src = 'img/light.svg'
+        localStorage.setItem('theme', 'dark-theme')
+    } else {
+        toggleTheme.src = 'img/night.svg'
+        localStorage.setItem('theme', 'light-theme')
+    }
+}
   
 
 
