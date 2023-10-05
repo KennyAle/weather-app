@@ -7,17 +7,19 @@
     --brightness: 0;
     --contrast: 1;
     --background: black;
+    --background-contrast: white;
 } 
 
 .dark-theme {
     --primary-color: rgb(0, 0, 0);
     --secondary-color: rgba(255, 255, 255, 0.2);
     --tertiary-color: rgb(31, 31, 31);
-    --primary-font: rgba(255, 255, 255, 0.8);
+    --primary-font: rgba(255, 255, 255, 0.9);
     --secondary-font: rgba(255, 255, 255, 0.5);
     --brightness: 1;
     --contrast: 0;
     --background: white;
+    --background-contrast: black;
 }
 
 body {
@@ -27,7 +29,14 @@ body {
 }
 
 .map {
-    width: 100%;
+    background-color: black;
+    filter: brightness(3.5);
+    position: absolute;
+    min-width: 40%;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 0;
 }
 
 .toggle {
@@ -66,6 +75,11 @@ input::placeholder{
 
 .card:hover .back {
     z-index: 10;
+    opacity: 1;
+}
+
+.card:hover .forecast {
+    transform: translateY(0%);
 }
 
 /* Weather details styles */
@@ -91,6 +105,8 @@ input::placeholder{
     scroll-snap-type: y mandatory;
     -ms-overflow-style: none; 
     scrollbar-width: none;
+    opacity: 0;
+    transition: opacity 0.4s ease-in-out;
 }
 
 .back::-webkit-scrollbar {
@@ -106,12 +122,23 @@ input::placeholder{
     background-color: var(--tertiary-color);
     text-align: left;
     box-shadow: inset 0px 20px 50px -20px rgba(0,0,0,0.09);
+    cursor: default;
+    z-index: 10;
+    font-weight: 700;
+}
+
+.back h2:not(.back-title) {
     cursor: grab;
 }
 
 .back h2:hover {
     box-shadow: inset 0px 20px 50px 10px var(--secondary-color);
     color: var(--background);
+}
+
+.back h2:hover .map{
+    z-index: 15;
+    opacity: 1;
 }
 
 .forecast {
@@ -123,11 +150,12 @@ input::placeholder{
     scroll-snap-align: end;
     cursor: default;
     padding: 0 1.5rem;
-    transition: background-color 0.1s ease-out, color 0.1s;
+    transform: translateY(200%);
+    transition: background-color 0.1s ease-in, color 0.1s, transform 0.4s;
 }
 
 .forecast:hover {
-    background-color: var(--primary-font);
+    background-color: var(--background);
     color: var(--tertiary-color);
 }
 
@@ -247,6 +275,11 @@ input::placeholder{
 
 .favorite-card:hover .back{
     z-index: 10;
+    opacity: 1;
+}
+
+.favorite-card:hover .forecast {
+    transform: translateY(0%);
 }
 /* Modal overlay styles */
 .modal-overlay {
@@ -273,16 +306,16 @@ input::placeholder{
 /* Keyframe animation for floating effect */
 @keyframes float {
 	0% {
-		transform: translatey(0px); /*translateZ(0) rotateX(0deg) rotateY(0deg)*/
+		transform: translatey(0px);
 ;
 	}
 	50% {
 		box-shadow: 0 25px 25px 0px var(--secondary-color);
-		transform: translatey(-8px); /*translateZ(0) rotateX(5deg) rotateY(0deg)*/
+		transform: translatey(-8px);
 ;
 	}
 	100% {
-		transform: translatey(0px); /*translateZ(0) rotateX(0deg) rotateY(0deg)*/
+		transform: translatey(0px);
 ;
 	}
 }

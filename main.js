@@ -10,7 +10,6 @@ const favWeatherIcon = document.querySelector('.fav-weather')
 const cardModal = document.querySelector('.card')
 const modalBackground = document.createElement('div')
 
-/*
 const mapUrl = 'https://tile.openweathermap.org/map/'
 // https://tile.openweathermap.org/map/{layer}/{z}/{x}/{y}.png?appid={API key}
 async function checkWeatherTest() {
@@ -19,15 +18,17 @@ async function checkWeatherTest() {
     if (response.status == 404) {
         alert(`${searchBox.value} is not a City`)
     } else {
-        console.log(response)
-        const image = document.createElement('img')
-        image.classList.add('map')
-        image.src = URL.createObjectURL(await response.blob())
-        const firstChild = document.body.firstChild
-        document.body.insertBefore(image, firstChild)
+        const weatherMapUrl = URL.createObjectURL(await response.blob())
+        const weatherMap = document.querySelectorAll('.favorite-card')
+        weatherMap.forEach((element) => {
+            const image = document.createElement('img')
+            image.classList.add('map')
+            element.appendChild(image)
+            image.src = weatherMapUrl
+            console.log('map test', element)
+        })
     }
 }
-*/
 
 // Create a modal background for the card
 modalBackground.classList.add('modal-background')
@@ -67,7 +68,7 @@ async function checkWeatherForecast(city) {
                 </div>
                 <img class="fimg" src="${getWeatherIcon(item.weather[0].main)}" alt="${(item.weather[0].description)}">
                 <p class="fdescription">${item.weather[0].main}</p>
-                <p class="ftemp">${Math.round(item.main.temp)}°C</p>`
+                <p class="ftemp font-bold">${Math.round(item.main.temp)}°C</p>`
 
                 backCard.appendChild(div)
             })
@@ -173,6 +174,7 @@ function handleSearch() {
 searchBox.addEventListener('keydown', (event) => {
     if (event.key === 'Enter') {
         handleSearch()
+        checkWeatherTest()
     }
 })
 
@@ -439,7 +441,7 @@ async function getForecastForCity(cityName) {
                     </div>
                     <img class="fimg" src="${getWeatherIcon(item.weather[0].main)}" alt="${(item.weather[0].description)}">
                     <p class="fdescription">${item.weather[0].main}</p>
-                    <p class="ftemp">${Math.round(item.main.temp)}°C</p>`
+                    <p class="ftemp font-bold">${Math.round(item.main.temp)}°C</p>`
 
                     cityContainer.appendChild(div)
                 })
@@ -491,29 +493,34 @@ document.addEventListener('mouseup', () => {
       })
   })
 
-const toggleTheme = document.querySelector('.toggle')
-const body = document.body
+$(document).ready(function() {
+    const toggleTheme = $('.toggle')
+    const body = $('body')
 
-const savedTheme = localStorage.getItem('theme')
-
-if (savedTheme) {
-    body.classList.add(savedTheme)
-} if (savedTheme === 'dark-theme') {
-    toggleTheme.src = 'img/light.svg'
-} else {
-    toggleTheme.src = 'img/night.svg'
-}
-
-toggleTheme.onclick = function() {
-    body.classList.toggle('dark-theme')
-    if(body.classList.contains('dark-theme')) {
-        toggleTheme.src = 'img/light.svg'
-        localStorage.setItem('theme', 'dark-theme')
+    const savedTheme = localStorage.getItem('theme')
+    
+    if (savedTheme) {
+        body.addClass(savedTheme)
+    } 
+    
+    if (savedTheme === 'dark-theme') {
+        toggleTheme.attr('src', 'img/light.svg')
+        toggleTheme.attr('alt', 'dark mode enabled')
     } else {
-        toggleTheme.src = 'img/night.svg'
-        localStorage.setItem('theme', 'light-theme')
+        toggleTheme.attr('src', 'img/night.svg')
+        toggleTheme.attr('alt', 'light mode enabled')
     }
-}
-  
 
-
+    toggleTheme.click(function() {
+        body.toggleClass('dark-theme')
+        if(body.hasClass('dark-theme')) {
+            toggleTheme.attr('src', 'img/night.svg')
+            toggleTheme.attr('alt', 'light mode enabled')
+            localStorage.setItem('theme', 'dark-theme')
+        } else {
+            toggleTheme.attr('src', 'img/light.svg')
+            toggleTheme.attr('alt', 'dark mode enabled')
+            localStorage.setItem('theme', 'light-theme')
+        }
+    })
+})
